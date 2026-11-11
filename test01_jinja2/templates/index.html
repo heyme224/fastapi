@@ -1,0 +1,25 @@
+<!-- templates/index.html-->
+ <!DOCTYPE html>
+ <html lang="en">
+ <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>index.html</title>
+ </head>
+ <body>
+    <div class="container">
+        <h1>신해림 인덱스 페이지입니다.</h1>
+        <a href="/members">회원목록</a>
+        <p>
+            오늘의 운세 : <strong>{{fortuneToday}}</strong>
+        </p>
+        <h2>공지사항입니다</h2>
+        <ul>
+            {%for notice in noticeList%}
+        <li>{{ notice }}</li>
+            {%endfor%}
+        </ul>
+
+    </div>
+ </body>
+ </html>
