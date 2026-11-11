@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>member/edit.html</title>
+</head>
+<body>
+    <div class="container">
+        <h3>회원 정보 수정 양식</h3>
+       <form action="/member/update" method="post">
+            <!-- 1. 몇 번 회원을 수정할지 알아야 하므로 번호는 hidden으로 숨겨서 보냄 -->
+            <input type="hidden" name="num" value="{{ row.num }}">
+
+            <div>
+                <label for="name">이름</label>
+                <!-- value 속성에 기존 DB에서 가져온 row.name을 미리 채워둠 -->
+                <input type="text" name="name" id="name" value="{{ row.name }}">
+            </div>
+            <div>
+                <label for="addr">주소</label>
+                <!-- value 속성에 기존 DB에서 가져온 row.addr을 미리 채워둠 -->
+                <input type="text" name="addr" id="addr" value="{{ row.addr }}">
+            </div>
+            <button type="submit">수정 확인</button>
+            <button type="reset">취소</button>
+        </form>
+        </p>
+    </div>
+    
+</body>
+</html>

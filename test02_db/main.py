@@ -74,3 +74,39 @@ def deleteMember(num:int,db:Session =Depends(get_db)):
     db.execute(query,{"num":num})
     db.commit()
     return RedirectResponse("/member",status_code=302)
+
+@app.get("/member/edit/{num}")
+def editMember(req:Request,num:int,db:Session=Depends(get_db)):
+     query=text("""
+            SELECT num, name, addr
+            FROM member
+            WHERE num=:num    
+    """)
+     row=db.execute(query,{"num":num}).fetchone()
+
+     return templates.TemplateResponse(
+         request=req,
+         name="member/edit.html",
+         context={
+             "row":row
+         }
+     )
+@app.post("/member/update", response_class=HTMLResponse)
+def updateMember(
+    req: Request,
+    num: int = Form(...),
+    name: str = Form(...),
+    addr: str = Form(...),
+    db: Session = Depends(get_db)
+):
+    # DB에서 특정 번호(num)의 회원 정보를 수정(UPDATE)하는 SQL
+    query = text("""
+        UPDATE member 
+        SET name = :name, addr = :addr 
+        WHERE num = :num
+    """)
+    db.execute(query, {"name": name, "addr": addr, "num": num})
+    db.commit()  # 수정 확정
+
+    # 수정이 끝나면 회원 목록 페이지로 자동 이동
+    return RedirectResponse("/member", status_code=302)
