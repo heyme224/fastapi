@@ -1,5 +1,5 @@
-from fastapi import Depends, FastAPI, Request
-from fastapi.responses import HTMLResponse
+from fastapi import Depends, FastAPI, Form, Request
+from fastapi.responses import HTMLResponse, RedirectResponse
 from fastapi.templating import Jinja2Templates
 
 from database import get_db
@@ -40,4 +40,37 @@ def getMembers(req:Request,db : Session=Depends(get_db)):
             "members":members
         }
     )
-    
+@app.get("/member/new",response_class=HTMLResponse)
+def memberNewForm(req:Request):
+    return templates.TemplateResponse(
+        request=req,
+        name="member/new.html"
+    )
+
+@app.post("/member/new",response_class=HTMLResponse)
+def memberNew(req:Request,name:str=Form(...),addr:str=Form(...),db:Session=Depends(get_db)):
+    query =text("""
+        INSERT INTO member
+        (name,addr)
+        VALUES(:name, :addr)
+""")
+    db.execute(query,{"name":name,"addr":addr})
+    db.commit()
+    return templates.TemplateResponse(
+        request=req,
+        name="member/alert.html",
+        context={
+            "msg":f"{name}님의 정보를 저장했습니다",
+            "url":"/member"
+        }
+    )
+@app.get("/member/delete/{num}")
+def deleteMember(num:int,db:Session =Depends(get_db)):
+    query=text("""
+        DELETE FROM member
+        WHERE num=:num
+
+""")
+    db.execute(query,{"num":num})
+    db.commit()
+    return RedirectResponse("/member",status_code=302)
